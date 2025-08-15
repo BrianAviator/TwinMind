@@ -16,7 +16,7 @@ Second Life LSL Code for a Google Gemini AI Chat Bot
         - This is the prefix to be added in chat to use the bot. The default is "twin" meaning an avatar in range of the bot can type "twin what is Second Life?" to have the bot respond about Second Life.
     - RATE_LIMIT=10.0
         - The number of seconds the user must wait between chat requests. This is to minimize abuse and manage API costs.
-    - MAX_TOKENS=100
+    - MAX_TOKENS=1000
         - Sets a maximum on the data that the Gemini API can use in a response. This is to manage API costs.
     - TEMPERATURE=0.7
         - Controls the randomness of the AI model output responses. 0.7 is a good number for a general chat bot.
