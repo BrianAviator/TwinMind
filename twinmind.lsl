@@ -213,17 +213,28 @@ processAiResponse(string response_json) {
     
     debug("Received API response: " + response_json);
     
-    // Parse the Gemini JSON response to extract the text content
-    string text_content = llJsonGetValue(response_json, ["candidates", 0, "content", "parts", 0, "text"]);
+    // Check finish reason first
+    string finish_reason = llJsonGetValue(response_json, ["candidates", 0, "finishReason"]);
     
-    if (text_content != JSON_INVALID) {
-        content = text_content;
-        // Add assistant's response to history
-        addToHistory("model", content);
+    if (finish_reason == "MAX_TOKENS") {
+        content = "My response was cut off due to length limits. Please try asking a more specific question.";
+        llOwnerSay("Response truncated due to MAX_TOKENS. Consider increasing MAX_TOKENS in config.");
+    } else if (finish_reason == "SAFETY") {
+        content = "I cannot respond to that request due to safety guidelines.";
+        llOwnerSay("Response blocked by safety filters.");
     } else {
-        // If we couldn't parse the response, provide an error message
-        content = "Something went wrong with the Gemini API. Try again later!";
-        llOwnerSay("Error parsing JSON response: " + response_json);
+        // Parse the Gemini JSON response to extract the text content
+        string text_content = llJsonGetValue(response_json, ["candidates", 0, "content", "parts", 0, "text"]);
+        
+        if (text_content != JSON_INVALID) {
+            content = text_content;
+            // Add assistant's response to history
+            addToHistory("model", content);
+        } else {
+            // If we couldn't parse the response, provide an error message
+            content = "Something went wrong with the Gemini API. Try again later!";
+            llOwnerSay("Error parsing JSON response: " + response_json);
+        }
     }
     
     // Send the response to public chat (Convert to Unicode for SL)
