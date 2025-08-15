@@ -166,27 +166,23 @@ makeApiRequest(string user_message, key avatar_id, string avatar_name) {
     can_process = FALSE;
     // Clean up expired history before building messages
     cleanupHistory();
-    // Add system prompt as the first message if not present
+    // Build contents list starting with conversation history
     list contents = [];
-    contents += llList2Json(JSON_OBJECT, [
-        "role", "system",
-        "parts", llList2Json(JSON_ARRAY, [llList2Json(JSON_OBJECT, ["text", SYSTEM_PROMPT])])
-    ]);
     // Add conversation history
     integer i;
     for (i = 0; i < llGetListLength(conversation_history); i++) {
         contents += llList2String(conversation_history, i);
     }
-    // Format and add current user message
-    string formatted_user_message = "An avatar in second life named " + avatar_name + " asks: " + user_message;
+    // Format and add current user message with system prompt context
+    string formatted_user_message = SYSTEM_PROMPT + "\n\nAn avatar in second life named " + avatar_name + " asks: " + user_message;
     addToHistory("user", formatted_user_message);
     contents += llList2Json(JSON_OBJECT, [
         "role", "user",
         "parts", llList2Json(JSON_ARRAY, [llList2Json(JSON_OBJECT, ["text", formatted_user_message])])
     ]);
-    // Trim to max history size (including system and new user message)
-    while (llGetListLength(contents) > MAX_HISTORY_SIZE + 2) {
-        contents = llDeleteSubList(contents, 1, 1); // keep system prompt at index 0
+    // Trim to max history size
+    while (llGetListLength(contents) > MAX_HISTORY_SIZE + 1) {
+        contents = llDeleteSubList(contents, 0, 0);
     }
     string contents_array = llList2Json(JSON_ARRAY, contents);
     string generation_config = llList2Json(JSON_OBJECT, [
@@ -223,7 +219,7 @@ processAiResponse(string response_json) {
     if (text_content != JSON_INVALID) {
         content = text_content;
         // Add assistant's response to history
-        addToHistory("assistant", content);
+        addToHistory("model", content);
     } else {
         // If we couldn't parse the response, provide an error message
         content = "Something went wrong with the Gemini API. Try again later!";
