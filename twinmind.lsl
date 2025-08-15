@@ -6,7 +6,7 @@
 // Configuration variables
 string CONFIG_NOTECARD = "config";
 string API_KEY = "";
-string API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
+string API_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/";
 string MODEL = "gemini-2.5-flash";
 string BOT_NAME = "TwinMind";         // Default Bot name
 string TRIGGER_PREFIX = "twin";      // Default trigger prefix
@@ -202,8 +202,10 @@ makeApiRequest(string user_message, key avatar_id, string avatar_name) {
     headers += [HTTP_BODY_MAXLENGTH, 16384];
     headers += [HTTP_VERIFY_CERT, FALSE];
     headers += [HTTP_CUSTOM_HEADER, "x-goog-api-key", API_KEY];
+    // Construct the full API endpoint with model
+    string full_endpoint = API_ENDPOINT + MODEL + ":generateContent";
     // Make the API request
-    http_request_id = llHTTPRequest(API_ENDPOINT, headers, json);
+    http_request_id = llHTTPRequest(full_endpoint, headers, json);
 }
 
 // Function to process and send AI response
