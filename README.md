@@ -26,7 +26,7 @@ Second Life LSL Code for a Google Gemini AI Chat Bot
         - Instructions to be given to the AI API. This governs how the bot behaves.
     - BOT_NAME=TwinMind
         - The name of the bot that will be displayed in chat messages. This name is automatically inserted into the SYSTEM_PROMPT when the config is loaded.
-    - API_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent
+    - API_ENDPOINT=https://generativelanguage.googleapis.com/v1beta/models/
         - The API endpoint URL for Google's Gemini generateContent. Typically this should not be changed unless using a proxy or alternative endpoint.
     - LISTENING_CHANNEL=0
         - The chat channel the bot listens on. 0 is public chat. Change this if you want the bot to listen on a specific channel.
